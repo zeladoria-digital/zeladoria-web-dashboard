@@ -1,4 +1,5 @@
 import { type CSSProperties, type FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
@@ -32,21 +33,19 @@ export default function LoginPage() {
     return Object.keys(novosErros).length === 0;
   };
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
   e.preventDefault();
-  console.log('1. Iniciando login...')
   
   if (!validarFormulario()) {
-    console.log('2. Formulário inválido:', erros)
     return
   }
 
-  console.log('3. Formulário válido')
   setLoading(true);
   setErroGeral("");
 
   try {
-    console.log('4. Chamando Firebase Auth...')
     const firebaseRes = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${import.meta.env.VITE_FIREBASE_API_KEY}`,
       {
@@ -61,12 +60,10 @@ export default function LoginPage() {
     );
 
     const firebaseData = await firebaseRes.json();
-    console.log('5. Resposta Firebase:', firebaseData)
     
     if (firebaseData.error) throw new Error("E-mail ou senha inválidos");
 
     const idToken: string = firebaseData.idToken;
-    console.log('6. idToken gerado, chamando backend...')
 
     const backendRes = await fetch(`${import.meta.env.VITE_API_URL}/users/login-dashboard`, {
       method: "POST",
@@ -75,15 +72,13 @@ export default function LoginPage() {
     });
 
     const backendData = await backendRes.json();
-    console.log('7. Resposta backend:', backendData)
     
     if (!backendRes.ok) throw new Error(backendData.error || "Acesso negado");
 
     localStorage.setItem("token", backendData.token);
     localStorage.setItem("user", JSON.stringify(backendData.user));
 
-    console.log('8. Login bem sucedido! Redirecionando...')
-    window.location.href = "/dashboard";
+    navigate("/dashboard");
 
   } catch (error: any) {
     console.log('ERRO:', error.message)
@@ -97,11 +92,6 @@ export default function LoginPage() {
     <div style={styles.page}>
       {/* Background gradient */}
       <div style={styles.background} />
-
-      {/* Botão voltar */}
-      <button style={styles.botaoVoltar} onClick={() => window.history.back()}>
-        ← Voltar
-      </button>
 
       <div style={styles.container}>
         {/* Header */}
@@ -258,19 +248,6 @@ const styles: Record<string, CSSProperties> = {
     bottom: 0,
     background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #4c1d95 60%, #5b21b6 100%)",
     zIndex: 0,
-  },
-  botaoVoltar: {
-    position: "fixed",
-    top: 40,
-    left: 40,
-    background: "transparent",
-    border: "none",
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 22,
-    cursor: "pointer",
-    padding: "10px 16px",
-    borderRadius: 8,
-    zIndex: 10,
   },
   container: {
     position: "relative",
