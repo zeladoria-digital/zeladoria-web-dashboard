@@ -1,25 +1,37 @@
+/* FORÇA O FUNDO GLOBAL PARA O SEU LAYOUT E REMOVE ROLAGEM EXTRA */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb !important;
+  overflow-x: hidden;
+}
+
 /* RESET E CORES BÁSICAS */
 .container-principal {
   background-color: #f9fafb;
   min-height: 100vh;
+  width: 100%; 
   padding: 2rem;
-  font-family: sans-serif;
+  box-sizing: border-box; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #1f2937;
 }
 
+/* REMOVE O FUNDO BRANCO GERAL PARA DEIXAR O CINZA APARECER */
 .conteudo-central {
-  max-width: 1150px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 32px;
+  background-color: transparent; 
 }
 
-/* 1. CABEÇALHO (O Flexbox em Ação) */
+/* 1. CABEÇALHO */
 .cabecalho {
   display: flex;
-  justify-content: space-between; /* Joga um item pra cada ponta */
-  align-items: flex-end; /* Alinha os itens pela base inferior */
+  justify-content: space-between;
+  align-items: flex-end;
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 1rem;
 }
@@ -45,7 +57,7 @@
   background-color: #9333ea;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 0.5rem;
   font-weight: 500;
   cursor: pointer;
@@ -56,10 +68,10 @@
   background-color: #7e22ce;
 }
 
-/* 2. CARDS DE RESUMO (O Grid CSS em Ação) */
+/* 2. CARDS DE RESUMO */
 .grid-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Cria 3 colunas de tamanhos iguais */
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
@@ -67,8 +79,8 @@
   background-color: white;
   padding: 1.5rem;
   border-radius: 0.75rem;
-  border: 1px solid #f3f4f6;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
 }
@@ -85,11 +97,12 @@
   font-weight: 500;
 }
 
-/* 3. TABELA BÁSICA */
+/* 3. TABELA */
 .container-tabela {
   background-color: white;
   border-radius: 0.75rem;
-  border: 1px solid #f3f4f6;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   overflow: hidden;
 }
 
@@ -101,9 +114,11 @@
 
 .tabela-dispositivos th {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
   font-weight: 600;
   font-size: 0.875rem;
+  color: #374151;
 }
 
 .tabela-dispositivos td {

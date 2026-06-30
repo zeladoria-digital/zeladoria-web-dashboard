@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './DeviceManagement.css'; // Importando o nosso arquivo de estilos raiz
+import './DeviceManagement.css';
 
 interface Device {
   id: string;
@@ -12,17 +12,29 @@ interface Device {
 const mockDevices: Device[] = [
   { id: 'IOT-VH-0042', veiculo: 'ABC-1234', status: 'Online', deteccoes: 247, bateria: '87%' },
   { id: 'IOT-VH-0043', veiculo: 'DEF-5678', status: 'Online', deteccoes: 189, bateria: '92%' },
-  { id: 'IOT-VH-0044', veiculo: 'GHI-9012', status: 'Offline', deteccoes: 0, bateria: '12%' },
+  { id: 'IOT-VH-0044', veiculo: 'GHI-9012', status: 'Offline', deteccoes: 0, bateria: '12%' },  
+  { id: 'IOT-VH-0045', veiculo: 'XYZ-9876', status: 'Online', deteccoes: 0, bateria: '100%' }
 ];
 
 export default function DeviceManagement() {
   const [devices] = useState<Device[]>(mockDevices);
 
+  // 1. A LÓGICA VEM AQUI (Antes do return)
+  
+  // Inspetor separando os online e contando
+  const quantidadeOnline = devices.filter(device => device.status === 'Online').length;
+  
+  // Inspetor separando os offline e contando
+  const quantidadeOffline = devices.filter(device => device.status === 'Offline').length;
+
+  // BÔNUS: Para somar todas as detecções, usamos o .reduce()
+  // Ele é como um inspetor com uma calculadora: o 'acc' (acumulador) começa em 0 e vai somando as detecções de cada dispositivo.
+  const totalDeteccoes = devices.reduce((acc, device) => acc + device.deteccoes, 0);
   return (
     <div className="container-principal">
       <div className="conteudo-central">
         
-        {/* === 1. CABEÇALHO === */}
+        {/* CABEÇALHO */}
         <header className="cabecalho">
           <div className="titulos">
             <button className="botao-voltar">← Dashboard</button>
@@ -31,23 +43,26 @@ export default function DeviceManagement() {
           <button className="botao-primario">+ Registrar Dispositivo</button>
         </header>
 
-        {/* === 2. CARDS DE RESUMO === */}
+{/* CARDS DE RESUMO */}
         <div className="grid-cards">
           <div className="card">
-            <span className="numero-destaque online">12</span>
+            {/* Trocamos o '12' pela variável */}
+            <span className="numero-destaque online">{quantidadeOnline}</span>
             <span className="legenda-card">Dispositivos Online</span>
           </div>
           <div className="card">
-            <span className="numero-destaque offline">3</span>
+            {/* Trocamos o '3' pela variável */}
+            <span className="numero-destaque offline">{quantidadeOffline}</span>
             <span className="legenda-card">Dispositivos Offline</span>
           </div>
           <div className="card">
-            <span className="numero-destaque neutro">1,892</span>
+            {/* Trocamos o '1,892' pela variável */}
+            <span className="numero-destaque neutro">{totalDeteccoes}</span>
             <span className="legenda-card">Detecções Hoje</span>
           </div>
         </div>
 
-        {/* === 3. TABELA DE DADOS === */}
+        {/* TABELA DE DADOS */}
         <div className="container-tabela">
           <table className="tabela-dispositivos">
             <thead>
