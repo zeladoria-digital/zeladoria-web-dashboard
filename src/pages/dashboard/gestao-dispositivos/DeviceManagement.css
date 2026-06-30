@@ -1,0 +1,131 @@
+/* RESET E CORES BÁSICAS */
+.container-principal {
+  background-color: #f9fafb;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: sans-serif;
+  color: #1f2937;
+}
+
+.conteudo-central {
+  max-width: 1150px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* 1. CABEÇALHO (O Flexbox em Ação) */
+.cabecalho {
+  display: flex;
+  justify-content: space-between; /* Joga um item pra cada ponta */
+  align-items: flex-end; /* Alinha os itens pela base inferior */
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.titulos h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #111827;
+}
+
+.botao-voltar {
+  background: none;
+  border: none;
+  color: #a855f7;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  padding: 0;
+}
+
+.botao-primario {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botao-primario:hover {
+  background-color: #7e22ce;
+}
+
+/* 2. CARDS DE RESUMO (O Grid CSS em Ação) */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Cria 3 colunas de tamanhos iguais */
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.numero-destaque { font-size: 1.875rem; font-weight: bold; }
+.numero-destaque.online { color: #10b981; }
+.numero-destaque.offline { color: #ef4444; }
+.numero-destaque.neutro { color: #3b82f6; }
+
+.legenda-card {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* 3. TABELA BÁSICA */
+.container-tabela {
+  background-color: white;
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+}
+
+.tabela-dispositivos {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabela-dispositivos th {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.tabela-dispositivos td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f9fafb;
+  font-size: 0.875rem;
+}
+
+.bolinha-status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.bg-verde { background-color: #10b981; }
+.bg-vermelho { background-color: #ef4444; }
+
+.botao-detalhes {
+  background: none;
+  border: none;
+  color: #a855f7;
+  font-weight: 500;
+  cursor: pointer;
+}
