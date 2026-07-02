@@ -36,6 +36,7 @@ export default function DashboardPrincipal() {
   const [stats, setStats] = useState<Stats>({ total: 0, resolved: 0, inProgress: 0, pending: 0 });
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
 
@@ -113,15 +114,58 @@ export default function DashboardPrincipal() {
               </svg>
               <span style={s.notifBadge}>5</span>
             </div>
-            <div style={s.userChip}>
-              <div style={s.userAvatar}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+            <div style={{ position: "relative" }}>
+              <div
+                style={{ ...s.userChip, cursor: "pointer" }}
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <div style={s.userAvatar}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                  </svg>
+                </div>
+                <span style={s.userName}>{user?.name ?? "Carregando..."}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2">
+                  <polyline points="6 9 12 15 18 9" />
                 </svg>
               </div>
-              <span style={s.userName}>
-                {user?.name ?? "Carregando..."}
-              </span>
+
+              {/* Dropdown */}
+              {showDropdown && (
+                <>
+                  {/* Overlay para fechar ao clicar fora */}
+                  <div
+                    style={{ position: "fixed", inset: 0, zIndex: 10 }}
+                    onClick={() => setShowDropdown(false)}
+                  />
+                  <div style={s.dropdown}>
+                    <button
+                      style={s.dropdownItem}
+                      onClick={() => { setShowDropdown(false); navigate("/perfil"); }}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                      </svg>
+                      Meu perfil
+                    </button>
+                    <div style={s.dropdownDivider} />
+                    <button
+                      style={{ ...s.dropdownItem, color: "#EF4444" }}
+                      onClick={() => {
+                        setShowDropdown(false);
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        navigate("/");
+                      }}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                      </svg>
+                      Sair
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </header>
@@ -573,5 +617,38 @@ const s: Record<string, any> = {
     textAlign: "center",
     marginTop: "20px",
     alignSelf: "center",
+  },
+  dropdown: {
+    position: "absolute",
+    top: "calc(100% + 10px)",
+    right: 0,
+    background: "white",
+    border: "1px solid #E2E8F0",
+    borderRadius: "16px",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+    minWidth: "220px",  // ← maior
+    zIndex: 20,
+    overflow: "hidden",
+    padding: "8px",
+  },
+  dropdownItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",          // ← maior
+    width: "100%",
+    padding: "16px 18px", // ← maior
+    background: "transparent",
+    border: "none",
+    borderRadius: "12px",
+    fontSize: "17px",     // ← maior
+    fontWeight: 500,
+    color: "#374151",
+    cursor: "pointer",
+    textAlign: "left",
+  },
+  dropdownDivider: {
+    height: "1px",
+    background: "#F1F5F9",
+    margin: "4px 0",
   },
 };

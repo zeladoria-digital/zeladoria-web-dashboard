@@ -1,12 +1,7 @@
-import { Route } from "react-router-dom";
-import LoginPage from "../pages/auth/LoginPage";
-import RegisterPage from "../pages/auth/RegisterPage";
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-export function AuthRoutes() {
-  return (
-    <>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-    </>
-  );
+export function AuthRoutes(): React.JSX.Element {
+  // O Outlet renderizará as rotas filhas (/login, /register) definidas no App.tsx
+  return <Outlet />;
 }
