@@ -19,17 +19,83 @@ const mockDevices: Device[] = [
 export default function DeviceManagement() {
   const [devices] = useState<Device[]>(mockDevices);
 
-  // 1. A LÓGICA VEM AQUI (Antes do return)
-  
   // Inspetor separando os online e contando
   const quantidadeOnline = devices.filter(device => device.status === 'Online').length;
   
   // Inspetor separando os offline e contando
   const quantidadeOffline = devices.filter(device => device.status === 'Offline').length;
 
-  // BÔNUS: Para somar todas as detecções, usamos o .reduce()
-  // Ele é como um inspetor com uma calculadora: o 'acc' (acumulador) começa em 0 e vai somando as detecções de cada dispositivo.
+  // Soma de todas as detecções usando reduce
   const totalDeteccoes = devices.reduce((acc, device) => acc + device.deteccoes, 0);
+
+  // Controle do Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Estado do formulário (para capturar os inputs)
+  const [formData, setFormData] = useState({
+    id: '',
+    veiculo: '',
+    status: 'Online', // Valor padrão
+    bateria: '100%',
+    deteccoes: 0
+  });
+
+  // Função disparada ao clicar em Salvar (agora com a tipagem do TypeScript React.FormEvent)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Evita que a página recarregue ao enviar o formulário
+
+    // Pegar o token (O "Crachá" de Autorização)
+    const token = localStorage.getItem('token'); 
+
+    if (!token) {
+      alert("Erro: Usuário não autenticado. Faça login novamente.");
+      return;
+    }
+
+    try {
+      // Disparar a requisição POST para o Back-end
+      const response = await fetch('http://localhost:3000/devices', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        // Enviando os dados do estado 
+        body: JSON.stringify({
+          deviceId: formData.id, 
+          vehiclePlate: formData.veiculo,
+          status: formData.status,
+          batteryLevel: formData.bateria
+        })
+      });
+
+      // Tratar a resposta do servidor
+      if (response.ok) {
+        alert("Dispositivo cadastrado com sucesso!");
+        
+        // Fecha o modal
+        setIsModalOpen(false);
+        
+        // Reseta o formulário para a próxima vez
+        setFormData({
+          id: '',
+          veiculo: '',
+          status: 'Online',
+          bateria: '100%',
+          deteccoes: 0
+        });
+
+      } else {
+        const errorData = await response.json();
+        alert(`Erro ao cadastrar: ${errorData.message || 'Dados inválidos.'}`);
+        console.error(errorData);
+      }
+    } catch (error) {
+      console.error("Erro na comunicação com a API:", error);
+      alert("Erro ao conectar com o servidor. Verifique se o back-end está rodando.");
+    }
+  };
+
   return (
     <div className="container-principal">
       <div className="conteudo-central">
@@ -40,23 +106,22 @@ export default function DeviceManagement() {
             <button className="botao-voltar">← Dashboard</button>
             <h1>Gestão de Dispositivos IoT</h1>
           </div>
-          <button className="botao-primario">+ Registrar Dispositivo</button>
+            <button className="botao-primario" onClick={() => setIsModalOpen(true)}>
+            + Registrar Dispositivo
+            </button>
         </header>
 
-{/* CARDS DE RESUMO */}
+        {/* CARDS DE RESUMO */}
         <div className="grid-cards">
           <div className="card">
-            {/* Trocamos o '12' pela variável */}
             <span className="numero-destaque online">{quantidadeOnline}</span>
             <span className="legenda-card">Dispositivos Online</span>
           </div>
           <div className="card">
-            {/* Trocamos o '3' pela variável */}
             <span className="numero-destaque offline">{quantidadeOffline}</span>
             <span className="legenda-card">Dispositivos Offline</span>
           </div>
           <div className="card">
-            {/* Trocamos o '1,892' pela variável */}
             <span className="numero-destaque neutro">{totalDeteccoes}</span>
             <span className="legenda-card">Detecções Hoje</span>
           </div>
@@ -96,6 +161,39 @@ export default function DeviceManagement() {
             </tbody>
           </table>
         </div>
+
+        {/* MODAL DE CADASTRO (Posicionado no final do componente pai para evitar bugs de CSS) */}
+        {isModalOpen && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>Registrar Dispositivo</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label>ID do Dispositivo</label>
+                  <input 
+                    placeholder="Ex: IOT-VH-0046" 
+                    value={formData.id}
+                    onChange={(e) => setFormData({...formData, id: e.target.value})}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Placa do Veículo</label>
+                  <input 
+                    placeholder="Ex: ABC-1234" 
+                    value={formData.veiculo}
+                    onChange={(e) => setFormData({...formData, veiculo: e.target.value})}
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                  <button type="submit" className="btn-save">Salvar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
