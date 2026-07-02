@@ -1,0 +1,219 @@
+/* FORÇA O FUNDO GLOBAL PARA O SEU LAYOUT E REMOVE ROLAGEM EXTRA */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb !important;
+  overflow-x: hidden;
+}
+
+/* RESET E CORES BÁSICAS */
+.container-principal {
+  background-color: #f9fafb;
+  min-height: 100vh;
+  width: 100%; 
+  padding: 2rem;
+  box-sizing: border-box; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* REMOVE O FUNDO BRANCO GERAL PARA DEIXAR O CINZA APARECER */
+.conteudo-central {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  background-color: transparent; 
+}
+
+/* 1. CABEÇALHO */
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.titulos h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #111827;
+}
+
+.botao-voltar {
+  background: none;
+  border: none;
+  color: #a855f7;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  padding: 0;
+}
+
+.botao-primario {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botao-primario:hover {
+  background-color: #7e22ce;
+}
+
+/* 2. CARDS DE RESUMO */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.numero-destaque { font-size: 1.875rem; font-weight: bold; }
+.numero-destaque.online { color: #10b981; }
+.numero-destaque.offline { color: #ef4444; }
+.numero-destaque.neutro { color: #3b82f6; }
+
+.legenda-card {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* 3. TABELA */
+.container-tabela {
+  background-color: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.tabela-dispositivos {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabela-dispositivos th {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.tabela-dispositivos td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f9fafb;
+  font-size: 0.875rem;
+}
+
+.bolinha-status {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.bg-verde { background-color: #10b981; }
+.bg-vermelho { background-color: #ef4444; }
+
+.botao-detalhes {
+  background: none;
+  border: none;
+  color: #a855f7;
+  font-weight: 500;
+  cursor: pointer;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+/* Container do Modal */
+.modal-content {
+  background: #ffffff !important; /* Força fundo branco */
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  color: #333333 !important; /* Força texto escuro */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  color: #1f2937 !important; /* Força o título a ser cinza bem escuro quase preto */
+  font-weight: 600;         /* Dá um pouco mais de destaque */
+}
+
+/* Labels e Inputs */
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db !important; /* Borda clara */
+  background-color: #ffffff !important; /* Fundo branco */
+  color: #1f2937 !important; /* Texto escuro */
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* Botões */
+.btn-save {
+  background-color: #7c3aed !important; /* Cor do seu tema */
+  color: white !important;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #f3f4f6 !important;
+  color: #374151 !important;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
