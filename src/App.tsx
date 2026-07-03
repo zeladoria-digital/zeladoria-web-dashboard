@@ -10,6 +10,8 @@ import { Perfil } from './pages/dashboard/Perfil'
 import DetalleOcorrencia from "./pages/dashboard/DetalhesOcorrencia"
 import LoginPage from "./pages/auth/LoginPage"
 import RegisterPage from "./pages/auth/RegisterPage"
+// 1. AQUI: Importação da sua tela de gestão
+import DeviceManagement from "./pages/dashboard/gestao-dispositivos/DeviceManagement"
 
 function App(): React.JSX.Element {
   return (
@@ -24,13 +26,15 @@ function App(): React.JSX.Element {
           <Route path="/register" element={<RegisterPage />} />
         </Route>
 
-        {/* Rotas do Dashboard com o Layout Aplicado */}
+        {/* Rotas do Dashboard com o Layout Aplicado (Sidebar) */}
         <Route element={<DashboardLayout />}>
           <Route element={<DashboardRoutes />}>
             <Route path="/dashboard" element={<DashboardPrincipal />} />
             <Route path="/ocorrencias" element={<ListaOcorrencias />} />
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/ocorrencia/:id" element={<DetalleOcorrencia />} />
+            {/* 2. AQUI: A rota para a sua tela sendo renderizada DENTRO do Layout com Sidebar */}
+            <Route path="/dispositivos" element={<DeviceManagement />} />
           </Route>
         </Route>
 

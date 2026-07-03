@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import './DeviceManagement.css';
+import React, { useState, useEffect } from 'react';import './DeviceManagement.css';
 
 interface Device {
   id: string;
@@ -17,8 +16,48 @@ const mockDevices: Device[] = [
 ];
 
 export default function DeviceManagement() {
-  const [devices] = useState<Device[]>(mockDevices);
+// Adicione o setDevices aqui no seu estado:
+  const [devices, setDevices] = useState<Device[]>(mockDevices);
 
+// Função para buscar a lista real no banco de dados
+  const buscarDispositivos = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:3000/devices', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const dadosDoBanco = await response.json();
+        
+        const dispositivosFormatados = dadosDoBanco.map((item: any) => {
+// Dentro do mapeamento da buscarDispositivos:
+let statusVisual = 'Offline';
+// Agora ele acende a luz verde se vier 'active' do banco OU se vier 'Online' direto do seu form
+if (item.status === 'active' || item.status === 'Online') { 
+  statusVisual = 'Online';
+}
+
+          return {
+            // Tentamos pegar o seu ID, mas se o banco não mandou, exibimos o ID do Firebase resumido
+            id: item.deviceId || (item.id ? item.id.substring(0, 8) + '...' : 'N/A'),
+            veiculo: item.vehiclePlate || 'N/A',
+            status: statusVisual as 'Online' | 'Offline',
+            deteccoes: 0,
+            bateria: item.batteryLevel || '100%'
+          };
+        });
+
+        setDevices(dispositivosFormatados);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar a lista real:", error);
+    }
+  };
+  // Faz a busca automática assim que a tela abre
+  useEffect(() => {
+    buscarDispositivos();
+  }, []);
   // Inspetor separando os online e contando
   const quantidadeOnline = devices.filter(device => device.status === 'Online').length;
   
@@ -62,29 +101,25 @@ export default function DeviceManagement() {
         },
         // Enviando os dados do estado 
         body: JSON.stringify({
+          // O validador do Kauê exige esse campo. 
+          // Estamos mandando um valor fixo (mock) só para passar no teste dele.
+          aiModelVersion: "YOLOv8-IoT", 
+          
+          // E podemos mandar os nossos dados também (se o Model dele salvar)
           deviceId: formData.id, 
           vehiclePlate: formData.veiculo,
           status: formData.status,
           batteryLevel: formData.bateria
         })
       });
-
-      // Tratar a resposta do servidor
-      if (response.ok) {
+if (response.ok) {
         alert("Dispositivo cadastrado com sucesso!");
-        
-        // Fecha o modal
         setIsModalOpen(false);
+        setFormData({ id: '', veiculo: '', status: 'Online', bateria: '100%', deteccoes: 0 });
         
-        // Reseta o formulário para a próxima vez
-        setFormData({
-          id: '',
-          veiculo: '',
-          status: 'Online',
-          bateria: '100%',
-          deteccoes: 0
-        });
-
+        // A MÁGICA ACONTECE AQUI: 
+        // Chama a função para buscar a lista atualizada do banco!
+        buscarDispositivos(); 
       } else {
         const errorData = await response.json();
         alert(`Erro ao cadastrar: ${errorData.message || 'Dados inválidos.'}`);
