@@ -7,7 +7,7 @@ interface Complaint {
   category: string;
   source: string;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt?: string;   // ← adicione
   neighborhood?: string;
   description?: string;
   photoUrl?: string;
@@ -58,30 +58,43 @@ const formatDateTime = (dateStr: string): string => {
 };
 
 const buildTimeline = (complaint: Complaint): TimelineItem[] => {
-  const items: TimelineItem[] = [
-    { label: "Reporte recebido", date: complaint.createdAt },
-  ];
+  const items: TimelineItem[] = []
 
-  if (complaint.status === "approved" || complaint.status === "in_progress" || complaint.status === "resolved") {
-    items.push({ label: "Em análise", date: complaint.updatedAt ?? complaint.createdAt });
-    items.push({ label: "Aprovado", date: complaint.updatedAt ?? complaint.createdAt });
+  // Sempre tem a data de criação
+  if (complaint.createdAt) {
+    items.push({ label: "Reporte recebido", date: complaint.createdAt })
   }
 
-  if (complaint.status === "in_progress") {
-    items.push({ label: "Em andamento", date: complaint.updatedAt ?? complaint.createdAt });
+  // Só adiciona os próximos se tiver data de atualização válida
+  const updatedAt = complaint.updatedAt && complaint.updatedAt !== complaint.createdAt
+    ? complaint.updatedAt
+    : null
+
+  if (complaint.status === "approved" && updatedAt) {
+    items.push({ label: "Aprovado", date: updatedAt })
   }
 
-  if (complaint.status === "resolved") {
-    items.push({ label: "Em andamento", date: complaint.updatedAt ?? complaint.createdAt });
-    items.push({ label: "Resolvido", date: complaint.updatedAt ?? complaint.createdAt });
+  if (complaint.status === "rejected" && updatedAt) {
+    items.push({ label: "Rejeitado", date: updatedAt })
   }
 
-  if (complaint.status === "rejected") {
-    items.push({ label: "Rejeitado", date: complaint.updatedAt ?? complaint.createdAt });
+  if (complaint.status === "in_progress" && updatedAt) {
+    items.push({ label: "Aprovado", date: updatedAt })
+    items.push({ label: "Em andamento", date: updatedAt })
   }
 
-  return items;
-};
+  if (complaint.status === "resolved" && updatedAt) {
+    items.push({ label: "Aprovado", date: updatedAt })
+    items.push({ label: "Em andamento", date: updatedAt })
+    items.push({ label: "Resolvido", date: updatedAt })
+  }
+
+  if (complaint.status === "cancelled" && updatedAt) {
+    items.push({ label: "Cancelado", date: updatedAt })
+  }
+
+  return items
+}
 
 // ─── Component ───────────────────────────────────────────────────────────────
 export default function DetalheOcorrencia() {
@@ -108,6 +121,12 @@ export default function DetalheOcorrencia() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
+
+      // ← Converte o timestamp do Firestore para ISO string
+      if (data.updatedAt?._seconds) {
+        data.updatedAt = new Date(data.updatedAt._seconds * 1000).toISOString();
+      }
+
       setComplaint(data);
       setNewStatus(data.status);
     } catch (err) {
