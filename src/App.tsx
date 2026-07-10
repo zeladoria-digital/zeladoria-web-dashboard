@@ -12,6 +12,10 @@ import LoginPage from "./pages/auth/LoginPage"
 import RegisterPage from "./pages/auth/RegisterPage"
 // 1. AQUI: Importação da sua tela de gestão
 import DeviceManagement from "./pages/dashboard/gestao-dispositivos/DeviceManagement"
+import OrdemServico from './pages/dashboard/OrdemServico'
+import ListaOrdens from './pages/dashboard/ListaOrdens'
+import GestaoEquipes from './pages/dashboard/GestaoEquipes'
+
 
 function App(): React.JSX.Element {
   return (
@@ -35,6 +39,10 @@ function App(): React.JSX.Element {
             <Route path="/ocorrencia/:id" element={<DetalleOcorrencia />} />
             {/* 2. AQUI: A rota para a sua tela sendo renderizada DENTRO do Layout com Sidebar */}
             <Route path="/dispositivos" element={<DeviceManagement />} />
+            {/* <Route path="/ordens" element={<OrdemServico />} /> */}
+            <Route path="/ordens" element={<ListaOrdens />} />
+            <Route path="/equipes" element={<GestaoEquipes />} />
+            <Route path='/ordens/nova' element={<OrdemServico />} />
           </Route>
         </Route>
 

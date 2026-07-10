@@ -1,5 +1,43 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+// ─── Configuração de Ícones do Leaflet ───────────────────────────────────────
+// Corrige o problema clássico de caminhos de imagens quebrados após build do React
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+// Ícone customizado para a Posição Atual (Roxo e com efeito de pulso)
+const currentSpaceIcon = L.divIcon({
+  className: "custom-current-marker",
+  html: `
+    <div style="
+      position: relative;
+      width: 20px;
+      height: 20px;
+      background-color: #8B5CF6;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    ">
+      <div style="
+        position: absolute;
+        inset: -6px;
+        background-color: rgba(139, 92, 246, 0.4);
+        border-radius: 50%;
+        animation: pulse 1.8s infinite ease-in-out;
+      "></div>
+    </div>
+  `,
+  iconSize: [20, 20],
+  iconAnchor: [10, 10], // Centraliza o ponto de ancoragem no meio do círculo
+});
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Complaint {
@@ -22,13 +60,24 @@ interface Stats {
   pending: number;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers & Mappers ───────────────────────────────────────────────────────
 const categoryLabel: Record<string, string> = {
   buraco: "Buraco na via",
   fossa: "Fossa cheia",
   vazamento: "Vazamento de água",
   iluminacao: "Iluminação",
   lixo: "Lixo acumulado",
+  arvore: "Árvore caída",
+  perigo: "Perigo",
+  outro: "Outro",
+};
+
+const statusColor: Record<string, string> = {
+  pending: "#EF4444",
+  approved: "#3B82F6",
+  in_progress: "#F59E0B",
+  resolved: "#10B981",
+  rejected: "#9CA3AF",
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -37,6 +86,8 @@ export default function DashboardPrincipal() {
   const [user, setUser] = useState<{ name: string } | null>(null);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [currentPosition, setCurrentPosition] = useState<[number, number] | null>(null);
+  const [loadingMap, setLoadingMap] = useState(true);
 
   const navigate = useNavigate();
 
@@ -44,7 +95,29 @@ export default function DashboardPrincipal() {
     const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
     loadStats();
+    getUserLocation();
   }, []);
+
+  // Captura a localização atual do profissional logado
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCurrentPosition([pos.coords.latitude, pos.coords.longitude]);
+          setLoadingMap(false);
+        },
+        (error) => {
+          console.warn("Geolocalização recusada ou indisponível, usando coordenada padrão.", error);
+          // Coordenada padrão de Currais Novos / RN como fallback
+          setCurrentPosition([-6.2607, -36.5303]);
+          setLoadingMap(false);
+        }
+      );
+    } else {
+      setCurrentPosition([-6.2607, -36.5303]);
+      setLoadingMap(false);
+    }
+  };
 
   const loadStats = async () => {
     const token = localStorage.getItem("token");
@@ -57,7 +130,7 @@ export default function DashboardPrincipal() {
 
       const data: Complaint[] = await res.json();
       
-      setComplaints(data); // ← salva todas as ocorrências
+      setComplaints(data);
 
       setStats({
         total: data.length,
@@ -71,31 +144,12 @@ export default function DashboardPrincipal() {
     }
   };
 
-    const timeAgo = (dateStr: string): string => {
+  const timeAgo = (dateStr: string): string => {
     const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
     if (diff < 60) return "Agora";
     if (diff < 3600) return `Há ${Math.floor(diff / 60)}min`;
     if (diff < 86400) return `Há ${Math.floor(diff / 3600)}h`;
     return `Há ${Math.floor(diff / 86400)}d`;
-  };
-
-  const categoryLabel: Record<string, string> = {
-    buraco: "Buraco na via",
-    fossa: "Fossa cheia",
-    vazamento: "Vazamento de água",
-    iluminacao: "Iluminação",
-    lixo: "Lixo acumulado",
-    arvore: "Árvore caída",
-    perigo: "Perigo",
-    outro: "Outro",
-  };
-
-  const statusColor: Record<string, string> = {
-    pending: "#EF4444",
-    approved: "#3B82F6",
-    in_progress: "#F59E0B",
-    resolved: "#10B981",
-    rejected: "#9CA3AF",
   };
 
   return (
@@ -133,7 +187,6 @@ export default function DashboardPrincipal() {
               {/* Dropdown */}
               {showDropdown && (
                 <>
-                  {/* Overlay para fechar ao clicar fora */}
                   <div
                     style={{ position: "fixed", inset: 0, zIndex: 10 }}
                     onClick={() => setShowDropdown(false)}
@@ -214,62 +267,75 @@ export default function DashboardPrincipal() {
         {/* ── Main Content Grid ── */}
         <div style={s.mainGrid}>
 
-        {/* ── Left: Mapa ── */}
-        <section style={s.card}>
-          <h2 style={s.cardTitle}>Mapa Interativo de Ocorrências</h2>
-          <div style={s.mapWrap}>
-            <div style={s.mapGrid}>
-              {complaints
-                .filter((c) => c.location?.latitude && c.location?.longitude)
-                .map((c) => {
-                  const minLat = -6.35, maxLat = -6.20
-                  const minLng = -36.60, maxLng = -36.45
+          {/* ── Left: Mapa Real Integrado ── */}
+          <section style={s.card}>
+            <h2 style={s.cardTitle}>Mapa Interativo de Ocorrências</h2>
+            <div style={s.mapWrap}>
+              {!loadingMap && currentPosition ? (
+                <MapContainer
+                  center={currentPosition}
+                  zoom={14}
+                  style={{ width: "100%", height: "100%", zIndex: 1 }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
 
-                  const top = ((maxLat - c.location!.latitude) / (maxLat - minLat)) * 100
-                  const left = ((c.location!.longitude - minLng) / (maxLng - minLng)) * 100
+                  {/* Marcador de referência da sua Posição Atual com ícone roxo customizado */}
+                  <Marker position={currentPosition} icon={currentSpaceIcon}>
+                    <Popup>
+                      <strong>Minha Posição Atual</strong> <br /> 
+                      Ponto de referência do profissional logado.
+                    </Popup>
+                  </Marker>
 
-                  const topClamped = Math.min(Math.max(top, 2), 95)
-                  const leftClamped = Math.min(Math.max(left, 2), 95)
-
-                  return (
-                    <div
-                      key={c.id}
-                      title={`${categoryLabel[c.category] ?? c.category} - ${c.neighborhood ?? ""}\n${c.status}`}
-                      style={{
-                        ...s.mapPin,
-                        background: statusColor[c.status] ?? "#6B7280",
-                        top: `${topClamped}%`,
-                        left: `${leftClamped}%`,
-                        transform: "translate(-50%, -50%)",
-                        cursor: "pointer",
-                      }}
-                    />
-                  )
-                })}
-
-              {/* Pin central de referência */}
-              <div style={{ ...s.mapPin, background: "transparent", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="2.5">
-                  <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
-                  <circle cx="12" cy="10" r="3" fill="#8B5CF6" />
-                </svg>
-              </div>
-
-              <div style={s.mapLabel}>
-                {complaints.filter(c => c.location?.latitude).length} ocorrências no mapa
-              </div>
+                  {/* Renderização real das Ocorrências vindo do Firestore */}
+                  {complaints
+                    .filter((c) => c.location?.latitude && c.location?.longitude)
+                    .map((c) => (
+                      <Marker 
+                        key={c.id} 
+                        position={[c.location!.latitude, c.location!.longitude]}
+                      >
+                        <Popup>
+                          <div style={{ fontSize: "14px", lineHeight: "1.4" }}>
+                            <strong style={{ color: "#1E293B" }}>{categoryLabel[c.category] ?? c.category}</strong>
+                            {c.neighborhood && <div style={{ color: "#64748B" }}>Bairro: {c.neighborhood}</div>}
+                            <div style={{ marginTop: "4px" }}>
+                              <span style={{ 
+                                display: "inline-block", 
+                                padding: "2px 8px", 
+                                borderRadius: "4px", 
+                                color: "white", 
+                                fontSize: "11px", 
+                                fontWeight: "bold",
+                                background: statusColor[c.status] ?? "#6B7280" 
+                              }}>
+                                {c.status === "pending" ? "Pendente" : c.status === "in_progress" ? "Em Andamento" : c.status}
+                              </span>
+                            </div>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    ))}
+                </MapContainer>
+              ) : (
+                <div style={s.loadingMapWrap}>
+                  <div style={s.spinner} />
+                  <p style={{ color: "#64748B", marginTop: 12, fontSize: "15px" }}>Buscando coordenadas de referência...</p>
+                </div>
+              )}
             </div>
-          </div>
-        </section>
+          </section>
 
           {/* ── Right: Ocorrências Críticas ── */}
           <section style={s.card}>
             <h2 style={s.cardTitle}>Ocorrências Críticas</h2>
 
-            {/* Banner dinâmico */}
             {stats.pending > 0 && (
               <div style={s.alertBanner}>
-                <span style={{ fontSize: "18px" }}>🚛</span>
+                <span style={{ fontSize: "18px" }}>`🚛`</span>
                 <div style={{ fontSize: "15px" }}>
                   <strong>Alta demanda:</strong> {stats.pending} ocorrências pendentes de revisão
                 </div>
@@ -279,7 +345,7 @@ export default function DashboardPrincipal() {
             <div style={s.criticalList}>
               {complaints
                 .filter((c) => c.status === "pending" || c.status === "in_progress")
-                .slice(0, 5) // ← últimas 5
+                .slice(0, 5)
                 .map((c) => (
                   <div key={c.id} style={c.status === "pending" ? s.criticalItemActive : s.criticalItem}>
                     <div style={s.criticalItemLeft}>
@@ -326,6 +392,7 @@ export default function DashboardPrincipal() {
           width: 100%;
           min-height: 100vh;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </div>
   );
@@ -350,8 +417,6 @@ const s: Record<string, any> = {
     flexDirection: "column",
     gap: "32px",
   },
-
-  // Header
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -362,16 +427,6 @@ const s: Record<string, any> = {
     display: "flex",
     alignItems: "center",
     gap: "16px",
-  },
-  backBtn: {
-    border: "none",
-    background: "transparent",
-    fontSize: "26px",
-    color: "#1E293B",
-    cursor: "pointer",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
   },
   headerTitle: {
     fontSize: "28px",
@@ -431,8 +486,6 @@ const s: Record<string, any> = {
     fontWeight: "600",
     color: "#334155",
   },
-
-  // Stats
   statsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
@@ -484,8 +537,6 @@ const s: Record<string, any> = {
     fontWeight: "700",
     paddingTop: "2px",
   },
-
-  // Main Grid
   mainGrid: {
     display: "grid",
     gridTemplateColumns: "1.5fr 1fr",
@@ -509,8 +560,6 @@ const s: Record<string, any> = {
     marginBottom: "20px",
     marginTop: 0,
   },
-
-  // Map
   mapWrap: {
     width: "100%",
     flex: 1,
@@ -521,37 +570,25 @@ const s: Record<string, any> = {
     overflow: "hidden",
     position: "relative",
   },
-  mapGrid: {
-    width: "100%",
+  loadingMapWrap: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     height: "100%",
-    backgroundImage: `linear-gradient(to right, #EEF2F6 1px, transparent 1px),
-                      linear-gradient(to bottom, #EEF2F6 1px, transparent 1px)`,
-    backgroundSize: "24px 24px",
-    position: "relative",
+    width: "100%",
+    position: "absolute",
+    inset: 0,
+    background: "#FAFAFA"
   },
-  mapPin: {
-    width: "10px",
-    height: "10px",
+  spinner: {
+    width: "36px",
+    height: "36px",
+    border: "3px solid #E5E7EB",
+    borderTopColor: "#7C3AED",
     borderRadius: "50%",
-    position: "absolute",
+    animation: "spin 0.8s linear infinite",
   },
-  mapLabel: {
-    position: "absolute",
-    top: "20px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    color: "#64748B",
-    fontSize: "15px",
-    fontWeight: "500",
-    background: "rgba(255,255,255,0.95)",
-    padding: "10px 20px",
-    borderRadius: "10px",
-    border: "1px solid #E2E8F0",
-    whiteSpace: "nowrap",
-    zIndex: 10,
-  },
-
-  // Critical
   alertBanner: {
     background: "#FFFBEB",
     border: "1px solid #FDE68A",
@@ -626,7 +663,7 @@ const s: Record<string, any> = {
     border: "1px solid #E2E8F0",
     borderRadius: "16px",
     boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-    minWidth: "220px",  // ← maior
+    minWidth: "220px",
     zIndex: 20,
     overflow: "hidden",
     padding: "8px",
@@ -634,13 +671,13 @@ const s: Record<string, any> = {
   dropdownItem: {
     display: "flex",
     alignItems: "center",
-    gap: "12px",          // ← maior
+    gap: "12px",
     width: "100%",
-    padding: "16px 18px", // ← maior
+    padding: "16px 18px",
     background: "transparent",
     border: "none",
     borderRadius: "12px",
-    fontSize: "17px",     // ← maior
+    fontSize: "17px",
     fontWeight: 500,
     color: "#374151",
     cursor: "pointer",
@@ -651,4 +688,5 @@ const s: Record<string, any> = {
     background: "#F1F5F9",
     margin: "4px 0",
   },
+  
 };

@@ -62,6 +62,7 @@ const items: SidebarItem[] = [
       </svg>
     ),
   },
+  /*
   {
     label: "Alertas",
     path: "/alertas",
@@ -83,6 +84,7 @@ const items: SidebarItem[] = [
       </svg>
     ),
   },
+  */
 ];
 
 export default function Sidebar() {
