@@ -65,31 +65,30 @@ const buildTimeline = (complaint: Complaint): TimelineItem[] => {
     items.push({ label: "Reporte recebido", date: complaint.createdAt })
   }
 
-  // Só adiciona os próximos se tiver data de atualização válida
-  const updatedAt = complaint.updatedAt && complaint.updatedAt !== complaint.createdAt
-    ? complaint.updatedAt
-    : null
+  // Altere aquela validação para aceitar a data de atualização ou usar a de criação como fallback:
+  const updatedAt = complaint.updatedAt || complaint.createdAt;
 
-  if (complaint.status === "approved" && updatedAt) {
+  // Remova a checagem de "&& updatedAt" dos seus ifs, pois agora ela sempre existirá:
+  if (complaint.status === "approved") {
     items.push({ label: "Aprovado", date: updatedAt })
   }
 
-  if (complaint.status === "rejected" && updatedAt) {
+  if (complaint.status === "rejected") {
     items.push({ label: "Rejeitado", date: updatedAt })
   }
 
-  if (complaint.status === "in_progress" && updatedAt) {
+  if (complaint.status === "in_progress") {
     items.push({ label: "Aprovado", date: updatedAt })
     items.push({ label: "Em andamento", date: updatedAt })
   }
 
-  if (complaint.status === "resolved" && updatedAt) {
+  if (complaint.status === "resolved") {
     items.push({ label: "Aprovado", date: updatedAt })
     items.push({ label: "Em andamento", date: updatedAt })
     items.push({ label: "Resolvido", date: updatedAt })
   }
 
-  if (complaint.status === "cancelled" && updatedAt) {
+  if (complaint.status === "cancelled") {
     items.push({ label: "Cancelado", date: updatedAt })
   }
 
