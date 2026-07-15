@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface Complaint {
   id: string;
   status: string;
@@ -14,7 +14,7 @@ interface Complaint {
   location?: { latitude: number; longitude: number };
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 const categoryLabel: Record<string, string> = {
   buraco: "Buraco na via",
   fossa: "Fossa cheia",
@@ -49,7 +49,7 @@ const formatDate = (dateStr: string): string => {
 const isFossa = (c: Complaint) =>
   c.category === "fossa" || c.category?.toLowerCase().includes("fossa");
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function ListaOcorrencias() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [filtered, setFiltered] = useState<Complaint[]>([]);
@@ -89,12 +89,12 @@ export default function ListaOcorrencias() {
   const applyFilters = () => {
     let result = [...complaints];
 
-    // Filtro por categoria/origem
+    
     if (activeFilter === "fossa") result = result.filter(isFossa);
     else if (activeFilter === "iot") result = result.filter(c => c.source === "iot");
     else if (activeFilter === "outros") result = result.filter(c => !isFossa(c) && c.source !== "iot");
 
-    // Filtro por busca
+    
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(c =>
@@ -132,7 +132,7 @@ export default function ListaOcorrencias() {
     <div style={s.root}>
       <main style={s.main}>
 
-        {/* ── Header ── */}
+        {}
         <header style={s.header}>
           <div>
             <a href="/dashboard" style={s.backLink}>← Dashboard</a>
@@ -146,9 +146,9 @@ export default function ListaOcorrencias() {
           </button>
         </header>
 
-        {/* ── Search + Filters ── */}
+        {}
         <div style={s.filterCard}>
-          {/* Search */}
+          {}
           <div style={s.searchWrap}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" style={{ flexShrink: 0 }}>
               <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -162,7 +162,7 @@ export default function ListaOcorrencias() {
             />
           </div>
 
-          {/* Filter chips */}
+          {}
           <div style={s.chips}>
             <button
               style={{ ...s.chip, ...(activeFilter === "all" ? s.chipActive : {}) }}
@@ -198,7 +198,7 @@ export default function ListaOcorrencias() {
           </div>
         </div>
 
-        {/* ── Table ── */}
+        {}
         <div style={s.tableCard}>
           {loading ? (
             <div style={s.loadingWrap}>
@@ -224,12 +224,12 @@ export default function ListaOcorrencias() {
                 ) : (
                   filtered.map((c, i) => (
                     <tr key={c.id} style={{ ...s.tr, background: i % 2 === 0 ? "#FFFFFF" : "#FAFAFA" }}>
-                      {/* ID */}
+                      {}
                       <td style={{ ...s.td, ...s.tdId }}>
                         {c.id.slice(0, 8).toUpperCase()}
                       </td>
 
-                      {/* Tipo */}
+                      {}
                       <td style={s.td}>
                         <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                           {isFossa(c) && <span>⭐</span>}
@@ -239,31 +239,31 @@ export default function ListaOcorrencias() {
                         </span>
                       </td>
 
-                      {/* Localização */}
+                      {}
                       <td style={{ ...s.td, color: "#6B7280" }}>
                         {c.neighborhood ?? "—"}
                       </td>
 
-                      {/* Status */}
+                      {}
                       <td style={s.td}>
                         <span style={{ ...s.statusBadge, ...(statusStyle[c.status] ?? statusStyle.pending) }}>
                           {statusLabel[c.status] ?? c.status}
                         </span>
                       </td>
 
-                      {/* Data */}
+                      {}
                       <td style={{ ...s.td, color: "#374151" }}>
                         {formatDate(c.createdAt)}
                       </td>
 
-                      {/* Origem */}
+                      {}
                       <td style={s.td}>
                         <span style={{ ...s.sourceBadge, background: c.source === "iot" ? "#EEF2FF" : "#F0FDF4", color: c.source === "iot" ? "#4F46E5" : "#16A34A" }}>
                           {c.source === "iot" ? "IoT" : "Cidadão"}
                         </span>
                       </td>
 
-                      {/* Ações */}
+                      {}
                       <td style={s.td}>
                         <button style={s.verBtn} onClick={() => navigate("/ocorrencia/" + c.id)}>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2">
@@ -280,7 +280,7 @@ export default function ListaOcorrencias() {
             </table>
           )}
 
-          {/* Footer da tabela */}
+          {}
           {!loading && filtered.length > 0 && (
             <div style={s.tableFooter}>
               <span style={s.tableCount}>
@@ -304,7 +304,7 @@ export default function ListaOcorrencias() {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+
 const s: Record<string, any> = {
   root: {
     width: "100%",
@@ -319,11 +319,11 @@ const s: Record<string, any> = {
     gap: "28px",
   },
 
-  // Header
+  
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-start", // ← era flex-end
+    alignItems: "flex-start", 
   },
   backLink: {
     fontSize: "15px",
@@ -353,7 +353,7 @@ const s: Record<string, any> = {
     cursor: "pointer",
   },
 
-  // Filter Card
+  
   filterCard: {
     background: "white",
     border: "1px solid #E2E8F0",
@@ -429,7 +429,7 @@ const s: Record<string, any> = {
     marginLeft: "auto",
   },
 
-  // Table Card
+  
   tableCard: {
     background: "white",
     border: "1px solid #E2E8F0",
@@ -498,7 +498,7 @@ const s: Record<string, any> = {
     padding: "6px 0",
   },
 
-  // Footer
+  
   tableFooter: {
     padding: "16px 24px",
     borderTop: "1px solid #F1F5F9",
@@ -509,7 +509,7 @@ const s: Record<string, any> = {
     color: "#64748B",
   },
 
-  // Loading
+  
   loadingWrap: {
     display: "flex",
     flexDirection: "column",

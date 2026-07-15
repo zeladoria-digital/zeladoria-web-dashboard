@@ -90,11 +90,11 @@ export default function LoginPage() {
 
   return (
     <div style={styles.page}>
-      {/* Background gradient */}
+      {}
       <div style={styles.background} />
 
       <div style={styles.container}>
-        {/* Header */}
+        {}
         <div style={styles.header}>
           <div style={styles.iconContainer}>
             <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
@@ -109,11 +109,11 @@ export default function LoginPage() {
           <p style={styles.subtitulo}>Portal de Gestão da Prefeitura</p>
         </div>
 
-        {/* Card */}
+        {}
         <div style={styles.card}>
           <h2 style={styles.cardTitulo}>Login do Gestor</h2>
 
-          {/* Erro geral */}
+          {}
           {erroGeral && (
             <div style={styles.erroGeral}>
               <span style={styles.erroGeralIcon}>⚠</span>
@@ -122,7 +122,7 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleLogin}>
-            {/* EMAIL */}
+            {}
             <div style={styles.inputGroup}>
               <label style={styles.label}>Email ou Matrícula</label>
               <div style={{ ...styles.inputContainer, ...(erros.email ? styles.inputError : {}) }}>
@@ -142,7 +142,7 @@ export default function LoginPage() {
               {erros.email && <span style={styles.erroText}>{erros.email}</span>}
             </div>
 
-            {/* SENHA */}
+            {}
             <div style={styles.inputGroup}>
               <label style={styles.label}>Senha</label>
               <div style={{ ...styles.inputContainer, ...(erros.senha ? styles.inputError : {}) }}>
@@ -162,7 +162,7 @@ export default function LoginPage() {
               {erros.senha && <span style={styles.erroText}>{erros.senha}</span>}
             </div>
 
-            {/* Lembrar + Esqueci */}
+            {}
             <div style={styles.lembrarContainer}>
               <label style={styles.lembrarLabel}>
                 <input
@@ -178,7 +178,7 @@ export default function LoginPage() {
               </a>
             </div>
 
-            {/* Botão */}
+            {}
             <button
               type="submit"
               disabled={loading}
@@ -188,7 +188,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divisor */}
+          {}
           <div style={styles.divisor} />
 
           <p style={styles.acessoRestrito}>
@@ -196,7 +196,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Rodapé */}
+        {}
         <p style={styles.rodape}>
           Sistema protegido por autenticação multi-fator
         </p>
@@ -237,7 +237,7 @@ const styles: Record<string, CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    // ← sem background aqui
+    
   },
   background: {
     display: "none",
@@ -258,7 +258,7 @@ const styles: Record<string, CSSProperties> = {
     width: "100%",
     maxWidth: 800,
     padding: "80px 40px",
-    margin: "0 auto",     // ← garante centralização
+    margin: "0 auto",     
   },
   header: {
     display: "flex",

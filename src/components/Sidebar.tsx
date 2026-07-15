@@ -62,29 +62,29 @@ const items: SidebarItem[] = [
       </svg>
     ),
   },
-  /*
-  {
-    label: "Alertas",
-    path: "/alertas",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-        <line x1="12" y1="9" x2="12" y2="13" />
-        <line x1="12" y1="17" x2="12.01" y2="17" />
-      </svg>
-    ),
-  },
-  {
-    label: "Notificações",
-    path: "/notificacoes",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-      </svg>
-    ),
-  },
-  */
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ];
 
 export default function Sidebar() {
@@ -101,7 +101,7 @@ export default function Sidebar() {
 
   return (
     <aside style={s.sidebar}>
-      {/* Logo */}
+      {}
       <div style={s.logoWrap}>
         <div style={s.logoIcon}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -111,7 +111,7 @@ export default function Sidebar() {
         <span style={s.logoText}>ReportAI</span>
       </div>
 
-      {/* Nav Items */}
+      {}
       <nav style={s.nav}>
         {items.map((item) => {
           const isActive = location.pathname === item.path;
@@ -132,7 +132,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* User + Logout */}
+      {}
       <div style={s.bottomWrap}>
         <div style={s.divider} />
         <div style={s.userWrap}>
@@ -172,7 +172,7 @@ const s: Record<string, any> = {
     boxShadow: "4px 0 20px rgba(0,0,0,0.15)",
   },
 
-  // Logo
+  
   logoWrap: {
     display: "flex",
     alignItems: "center",
@@ -198,7 +198,7 @@ const s: Record<string, any> = {
     letterSpacing: "-0.3px",
   },
 
-  // Nav
+  
   nav: {
     display: "flex",
     flexDirection: "column",
@@ -232,7 +232,7 @@ const s: Record<string, any> = {
     fontWeight: 500,
   },
 
-  // Bottom
+  
   bottomWrap: {
     display: "flex",
     flexDirection: "column",

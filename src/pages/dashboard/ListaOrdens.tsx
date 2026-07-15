@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface ServiceOrder {
   id: string;
   complaintId: string;
@@ -22,7 +22,7 @@ interface ServiceOrder {
   };
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 const statusLabel: Record<string, string> = {
   pending: "Pendente",
   in_progress: "Em andamento",
@@ -59,7 +59,7 @@ const timeAgo = (dateStr: string): string => {
   return `Há ${Math.floor(diff / 86400)}d`;
 };
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function ListaOrdens() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<ServiceOrder[]>([]);
@@ -68,7 +68,7 @@ export default function ListaOrdens() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Modal
+  
   const [showModal, setShowModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<ServiceOrder | null>(null);
   const [newStatus, setNewStatus] = useState("");
@@ -94,7 +94,7 @@ export default function ListaOrdens() {
       });
       const data: ServiceOrder[] = await res.json();
 
-      // Busca os detalhes de cada ordem (equipe + ocorrência)
+      
       const enriched = await Promise.all(
         data.map(async (order) => {
           try {
@@ -157,8 +157,8 @@ export default function ListaOrdens() {
   const openStatusModal = (order: ServiceOrder) => {
     setSelectedOrder(order);
     
-    // CORREÇÃO: Se a ordem está "in_progress", força o estado a começar como "completed"
-    // para bater com a primeira opção que aparece visualmente no select.
+    
+    
     if (order.status === "in_progress") {
       setNewStatus("completed");
     } else {
@@ -215,7 +215,7 @@ export default function ListaOrdens() {
     <div style={s.root}>
       <main style={s.main}>
 
-        {/* ── Header ── */}
+        {}
         <header style={s.header}>
           <div>
             <a href="/dashboard" style={s.backLink}>← Dashboard</a>
@@ -233,7 +233,7 @@ export default function ListaOrdens() {
 
         <div style={s.divider} />
 
-        {/* ── Stat Cards ── */}
+        {}
         <div style={s.statsGrid}>
           {[
             { label: "Total", value: stats.total, color: "#EEF2FF", iconColor: "#6366F1", icon: <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /> },
@@ -255,7 +255,7 @@ export default function ListaOrdens() {
           ))}
         </div>
 
-        {/* ── Search + Filters ── */}
+        {}
         <div style={s.filterCard}>
           <div style={s.searchWrap}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" style={{ flexShrink: 0 }}>
@@ -289,7 +289,7 @@ export default function ListaOrdens() {
           </div>
         </div>
 
-        {/* ── Table ── */}
+        {}
         <div style={s.tableCard}>
           {loading ? (
             <div style={s.loadingWrap}>
@@ -316,12 +316,12 @@ export default function ListaOrdens() {
                   ) : (
                     filtered.map((o, i) => (
                       <tr key={o.id} style={{ ...s.tr, background: i % 2 === 0 ? "#FFFFFF" : "#FAFAFA" }}>
-                        {/* ID */}
+                        {}
                         <td style={{ ...s.td, ...s.tdId }}>
                           {o.id.slice(0, 8).toUpperCase()}
                         </td>
 
-                        {/* Ocorrência */}
+                        {}
                         <td style={s.td}>
                           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <span style={{ fontWeight: 600, color: "#1E293B" }}>
@@ -333,7 +333,7 @@ export default function ListaOrdens() {
                           </div>
                         </td>
 
-                        {/* Equipe */}
+                        {}
                         <td style={s.td}>
                           <div style={s.teamCell}>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round">
@@ -346,19 +346,19 @@ export default function ListaOrdens() {
                           </div>
                         </td>
 
-                        {/* Bairro */}
+                        {}
                         <td style={{ ...s.td, color: "#6B7280" }}>
                           {o.complaint?.neighborhood ?? "—"}
                         </td>
 
-                        {/* Status */}
+                        {}
                         <td style={s.td}>
                           <span style={{ ...s.statusBadge, ...(statusStyle[o.status] ?? statusStyle.pending) }}>
                             {statusLabel[o.status] ?? o.status}
                           </span>
                         </td>
 
-                        {/* Data */}
+                        {}
                         <td style={{ ...s.td, color: "#6B7280" }}>
                           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <span>{formatDate(o.createdAt)}</span>
@@ -366,7 +366,7 @@ export default function ListaOrdens() {
                           </div>
                         </td>
 
-                        {/* Ações */}
+                        {}
                         <td style={s.td}>
                           <button
                             style={s.actionBtn}
@@ -397,7 +397,7 @@ export default function ListaOrdens() {
         </div>
       </main>
 
-      {/* ── Modal Atualizar Status ── */}
+      {}
       {showModal && selectedOrder && (
         <div style={s.modalOverlay}>
           <div style={s.modal}>
@@ -412,7 +412,7 @@ export default function ListaOrdens() {
             </div>
 
             <div style={s.modalBody}>
-              {/* Status atual */}
+              {}
               <div style={s.currentStatus}>
                 <span style={s.currentStatusLabel}>Status atual:</span>
                 <span style={{ ...s.statusBadge, ...(statusStyle[selectedOrder.status] ?? statusStyle.pending) }}>
@@ -420,7 +420,7 @@ export default function ListaOrdens() {
                 </span>
               </div>
 
-              {/* Novo status */}
+              {}
               <div style={s.modalField}>
                 <label style={s.modalLabel}>Novo Status</label>
                 <select
@@ -433,7 +433,7 @@ export default function ListaOrdens() {
                 </select>
               </div>
 
-              {/* Observações */}
+              {}
               <div style={s.modalField}>
                 <label style={s.modalLabel}>Observações (opcional)</label>
                 <textarea
@@ -445,7 +445,7 @@ export default function ListaOrdens() {
                 />
               </div>
 
-              {/* Erro */}
+              {}
               {modalError && (
                 <div style={s.modalError}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2">
@@ -485,7 +485,7 @@ export default function ListaOrdens() {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+
 const s: Record<string, any> = {
   root: {
     width: "100%",
@@ -500,7 +500,7 @@ const s: Record<string, any> = {
     gap: "28px",
   },
 
-  // Header
+  
   header: {
     width: "100%",
   },
@@ -541,7 +541,7 @@ const s: Record<string, any> = {
     background: "#E2E8F0",
   },
 
-  // Stats
+  
   statsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(4, 1fr)",
@@ -583,7 +583,7 @@ const s: Record<string, any> = {
     fontWeight: 500,
   },
 
-  // Filter Card
+  
   filterCard: {
     background: "white",
     border: "1px solid #E2E8F0",
@@ -634,7 +634,7 @@ const s: Record<string, any> = {
     fontWeight: 700,
   },
 
-  // Table
+  
   tableCard: {
     background: "white",
     border: "1px solid #E2E8F0",
@@ -708,7 +708,7 @@ const s: Record<string, any> = {
     color: "#64748B",
   },
 
-  // Loading
+  
   loadingWrap: {
     display: "flex",
     flexDirection: "column",
@@ -725,7 +725,7 @@ const s: Record<string, any> = {
     animation: "spin 0.8s linear infinite",
   },
 
-  // Modal
+  
   modalOverlay: {
     position: "fixed",
     inset: 0,

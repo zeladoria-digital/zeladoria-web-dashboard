@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet"
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Corrige o ícone padrão do Leaflet
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -12,7 +12,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface Complaint {
   id: string;
   category: string;
@@ -28,7 +28,7 @@ interface Team {
   members?: any[];
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 const categoryLabel: Record<string, string> = {
   buraco: "Buraco na via",
   fossa: "Fossa cheia",
@@ -40,7 +40,7 @@ const categoryLabel: Record<string, string> = {
   outro: "Outro",
 };
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function GerarOrdemServico() {
   const navigate = useNavigate();
   const [complaints, setComplaints] = useState<Complaint[]>([]);
@@ -73,7 +73,7 @@ export default function GerarOrdemServico() {
         }),
       ]);
 
-      // Verifica se a API rejeitou alguma das requisições (ex: 401, 403, 404)
+      
       if (!complaintsRes.ok) {
         console.error(`Erro ao buscar ocorrências. Status: ${complaintsRes.status}`);
       }
@@ -81,7 +81,7 @@ export default function GerarOrdemServico() {
         console.error(`Erro ao buscar equipes de campo. Status: ${teamsRes.status}`);
       }
 
-      // Só faz o parse se a resposta respectiva for válida (status 200-299)
+      
       const complaintsData = complaintsRes.ok ? await complaintsRes.json() : [];
       const teamsData = teamsRes.ok ? await teamsRes.json() : [];
 
@@ -143,15 +143,15 @@ export default function GerarOrdemServico() {
     }
   };
 
-  // Rotas dinâmicas 
+  
   useEffect(() => {
-    // Pega a localização atual do navegador
+    
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setCurrentPosition([pos.coords.latitude, pos.coords.longitude]);
       },
       () => {
-        // Fallback: coordenadas de Currais Novos
+        
         setCurrentPosition([-6.3307, -36.5303]);
       }
     );
@@ -167,7 +167,7 @@ export default function GerarOrdemServico() {
   }, [selectedComplaints, currentPosition]);
 
   const calculateRoute = async () => {
-    // Pega as coordenadas das ocorrências selecionadas
+    
     const selectedData = complaints.filter(c => selectedComplaints.includes(c.id));
     const points = selectedData
       .filter(c => c.location?.latitude && c.location?.longitude)
@@ -175,7 +175,7 @@ export default function GerarOrdemServico() {
 
     if (points.length === 0) return;
 
-    // Monta a URL da OSRM (OpenStreetMap Routing Machine) — gratuito, sem API key
+    
     const origin = `${currentPosition![1]},${currentPosition![0]}`;
     const coords = [origin, ...points].join(";");
     const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
@@ -204,7 +204,7 @@ export default function GerarOrdemServico() {
     <div style={s.root}>
       <main style={s.main}>
 
-        {/* ── Header ── */}
+        {}
         <header style={s.header}>
           <a href="/ordens" style={s.backLink}>← Ordens de serviço</a>
           <h1 style={s.headerTitle}>Gerar Ordem de Serviço</h1>
@@ -220,7 +220,7 @@ export default function GerarOrdemServico() {
         ) : (
           <div style={s.content}>
 
-            {/* ── Selecionar Ocorrências ── */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Selecionar Ocorrências</h2>
               <div style={s.complaintList}>
@@ -237,7 +237,7 @@ export default function GerarOrdemServico() {
                         style={{ ...s.complaintItem, ...(isSelected ? s.complaintItemSelected : {}) }}
                         onClick={() => toggleComplaint(c.id)}
                       >
-                        {/* Checkbox */}
+                        {}
                         <div style={{ ...s.checkbox, ...(isSelected ? s.checkboxSelected : {}) }}>
                           {isSelected && (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
@@ -246,7 +246,7 @@ export default function GerarOrdemServico() {
                           )}
                         </div>
 
-                        {/* Pin icon */}
+                        {}
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0 }}>
                           <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
                           <circle cx="12" cy="10" r="3" />
@@ -265,7 +265,7 @@ export default function GerarOrdemServico() {
               </div>
             </div>
 
-            {/* ── Equipe Responsável ── */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Equipe Responsável</h2>
               <select
@@ -280,7 +280,7 @@ export default function GerarOrdemServico() {
               </select>
             </div>
 
-            {/* ── Mapa ── */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Rota Otimizada</h2>
               
@@ -303,12 +303,12 @@ export default function GerarOrdemServico() {
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {/* Marcador da posição atual */}
+                    {}
                     <Marker position={currentPosition}>
                       <Popup>Sua localização atual</Popup>
                     </Marker>
 
-                    {/* Marcadores das ocorrências selecionadas */}
+                    {}
                     {complaints
                       .filter(c => selectedComplaints.includes(c.id) && c.location?.latitude)
                       .map(c => (
@@ -320,7 +320,7 @@ export default function GerarOrdemServico() {
                         </Marker>
                       ))}
 
-                    {/* Rota */}
+                    {}
                     {routeCoords.length > 0 && (
                       <Polyline
                         positions={routeCoords}
@@ -339,7 +339,7 @@ export default function GerarOrdemServico() {
               </div>
             </div>
 
-            {/* ── Observações ── */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Observações (opcional)</h2>
               <textarea
@@ -351,7 +351,7 @@ export default function GerarOrdemServico() {
               />
             </div>
 
-            {/* ── Erro ── */}
+            {}
             {error && (
               <div style={s.errorBanner}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2">
@@ -361,7 +361,7 @@ export default function GerarOrdemServico() {
               </div>
             )}
 
-            {/* ── Botão Criar ── */}
+            {}
             <button
               style={{ ...s.createBtn, ...(submitting ? s.createBtnDisabled : {}) }}
               onClick={handleSubmit}
@@ -396,8 +396,8 @@ export default function GerarOrdemServico() {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
-// ─── Styles ──────────────────────────────────────────────────────────────────
+
+
 const s: Record<string, any> = {
   root: {
     width: "100%",
@@ -410,17 +410,17 @@ const s: Record<string, any> = {
     display: "flex",
     flexDirection: "column",
     gap: "28px",
-    maxWidth: "1400px", // Aumentado para ocupar quase toda a tela
-    margin: "0 auto",   // <--- Centraliza o bloco do app inteiro na tela
+    maxWidth: "1400px", 
+    margin: "0 auto",   
   },
 
-  // Header
+  
   header: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     gap: "8px",
-    width: "100%", // Garante que o header ocupe toda a largura interna
+    width: "100%", 
   },
   backLink: {
     fontSize: "15px",
@@ -440,22 +440,22 @@ const s: Record<string, any> = {
     width: "100%",
   },
 
-  // Content
+  
   content: {
     display: "flex",
     flexDirection: "column",
     gap: "24px",
-    width: "100%", // Estica o conteúdo
+    width: "100%", 
   },
 
-  // Card
+  
   card: {
     background: "white",
     border: "1px solid #E2E8F0",
     borderRadius: "20px",
     padding: "28px",
     boxShadow: "0px 1px 4px rgba(0,0,0,0.04)",
-    width: "100%", // Garante que os cards ocupem toda a largura do main
+    width: "100%", 
   },
   cardTitle: {
     fontSize: "18px",
@@ -464,7 +464,7 @@ const s: Record<string, any> = {
     marginBottom: "20px",
   },
 
-  // Complaint List
+  
   complaintList: {
     display: "flex",
     flexDirection: "column",
@@ -481,7 +481,7 @@ const s: Record<string, any> = {
     cursor: "pointer",
     background: "white",
     transition: "all 0.15s",
-    width: "100%", // Estica os itens da lista
+    width: "100%", 
   },
   complaintItemSelected: {
     borderColor: "#7C3AED",
@@ -508,7 +508,7 @@ const s: Record<string, any> = {
     fontWeight: 400,
   },
 
-  // Select
+  
   select: {
     width: "100%",
     height: "56px",
@@ -522,7 +522,7 @@ const s: Record<string, any> = {
     appearance: "auto",
   },
 
-  // Map
+  
   mapPlaceholder: {
     height: "320px",
     background: "linear-gradient(135deg, #EFF6FF 0%, #EDE9FE 100%)",
@@ -544,7 +544,7 @@ const s: Record<string, any> = {
     color: "#94A3B8",
   },
 
-  // Textarea
+  
   textarea: {
     width: "100%",
     border: "1.5px solid #E2E8F0",
@@ -558,7 +558,7 @@ const s: Record<string, any> = {
     lineHeight: 1.6,
   },
 
-  // Error
+  
   errorBanner: {
     display: "flex",
     alignItems: "center",
@@ -572,7 +572,7 @@ const s: Record<string, any> = {
     width: "100%",
   },
 
-  // Create Button
+  
   createBtn: {
     display: "flex",
     alignItems: "center",
@@ -594,7 +594,7 @@ const s: Record<string, any> = {
     cursor: "not-allowed",
   },
 
-  // Loading
+  
   loadingWrap: {
     display: "flex",
     flexDirection: "column",

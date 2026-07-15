@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface Complaint {
   id: string;
   status: string;
   category: string;
   source: string;
   createdAt: string;
-  updatedAt?: string;   // ← adicione
+  updatedAt?: string;   
   neighborhood?: string;
   description?: string;
   photoUrl?: string;
@@ -22,7 +22,7 @@ interface TimelineItem {
   date: string;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 const categoryLabel: Record<string, string> = {
   buraco: "Buraco na via",
   fossa: "Fossa cheia",
@@ -60,15 +60,15 @@ const formatDateTime = (dateStr: string): string => {
 const buildTimeline = (complaint: Complaint): TimelineItem[] => {
   const items: TimelineItem[] = []
 
-  // Sempre tem a data de criação
+  
   if (complaint.createdAt) {
     items.push({ label: "Reporte recebido", date: complaint.createdAt })
   }
 
-  // Altere aquela validação para aceitar a data de atualização ou usar a de criação como fallback:
+  
   const updatedAt = complaint.updatedAt || complaint.createdAt;
 
-  // Remova a checagem de "&& updatedAt" dos seus ifs, pois agora ela sempre existirá:
+  
   if (complaint.status === "approved") {
     items.push({ label: "Aprovado", date: updatedAt })
   }
@@ -95,7 +95,7 @@ const buildTimeline = (complaint: Complaint): TimelineItem[] => {
   return items
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function DetalheOcorrencia() {
   const [complaint, setComplaint] = useState<Complaint | null>(null);
   const [loading, setLoading] = useState(true);
@@ -104,7 +104,7 @@ export default function DetalheOcorrencia() {
   const [statusNotes, setStatusNotes] = useState("");
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
-  // Pega o ID da URL
+  
   const id = window.location.pathname.split("/").pop();
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function DetalheOcorrencia() {
       });
       const data = await res.json();
 
-      // ← Converte o timestamp do Firestore para ISO string
+      
       if (data.updatedAt?._seconds) {
         data.updatedAt = new Date(data.updatedAt._seconds * 1000).toISOString();
       }
@@ -152,7 +152,7 @@ export default function DetalheOcorrencia() {
 
       if (res.ok) {
         setShowStatusModal(false);
-        loadComplaint(); // recarrega os dados
+        loadComplaint(); 
       }
     } catch (err) {
       console.error("Erro ao atualizar status:", err);
@@ -182,7 +182,7 @@ export default function DetalheOcorrencia() {
   const timeline = buildTimeline(complaint);
 
   const openStatusModal = () => {
-    // Se a denúncia atual não for approved nem rejected, força começar em 'approved'
+    
     if (!["approved", "rejected"].includes(complaint?.status ?? "")) {
       setNewStatus("approved");
     } else {
@@ -196,7 +196,7 @@ export default function DetalheOcorrencia() {
     <div style={s.root}>
       <main style={s.main}>
 
-        {/* ── Header ── */}
+        {}
         <header style={s.header}>
           <div>
             <a href="/ocorrencias" style={s.backLink}>← Voltar para lista</a>
@@ -215,10 +215,10 @@ export default function DetalheOcorrencia() {
 
         <div style={s.contentGrid}>
 
-          {/* ── Left Column ── */}
+          {}
           <div style={s.leftCol}>
 
-            {/* Foto */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Foto da Ocorrência</h2>
               {complaint.photoUrl ? (
@@ -239,7 +239,7 @@ export default function DetalheOcorrencia() {
               )}
             </div>
 
-            {/* Linha do Tempo */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Linha do Tempo</h2>
               <div style={s.timeline}>
@@ -260,10 +260,10 @@ export default function DetalheOcorrencia() {
 
           </div>
 
-          {/* ── Right Column ── */}
+          {}
           <div style={s.rightCol}>
 
-            {/* Informações */}
+            {}
             <div style={s.card}>
               <h2 style={s.cardTitle}>Informações</h2>
 
@@ -355,7 +355,7 @@ export default function DetalheOcorrencia() {
         </div>
       </main>
 
-      {/* ── Modal Alterar Status ── */}
+      {}
       {showStatusModal && (
         <div style={s.modalOverlay}>
           <div style={s.modal}>
@@ -418,7 +418,7 @@ export default function DetalheOcorrencia() {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+
 const s: Record<string, any> = {
   root: {
     width: "100%",
@@ -433,7 +433,7 @@ const s: Record<string, any> = {
     gap: "28px",
   },
 
-  // Header
+  
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -467,7 +467,7 @@ const s: Record<string, any> = {
     cursor: "pointer",
   },
 
-  // Content Grid
+  
   contentGrid: {
     display: "grid",
     gridTemplateColumns: "1.5fr 1fr",
@@ -485,7 +485,7 @@ const s: Record<string, any> = {
     gap: "28px",
   },
 
-  // Card
+  
   card: {
     background: "white",
     border: "1px solid #E2E8F0",
@@ -500,7 +500,7 @@ const s: Record<string, any> = {
     marginBottom: "20px",
   },
 
-  // Photo
+  
   photo: {
     width: "100%",
     borderRadius: "14px",
@@ -519,7 +519,7 @@ const s: Record<string, any> = {
     justifyContent: "center",
   },
 
-  // Timeline
+  
   timeline: {
     display: "flex",
     flexDirection: "column",
@@ -565,16 +565,16 @@ const s: Record<string, any> = {
     color: "#94A3B8",
   },
 
-  // Info List
+  
   infoList: {
     display: "flex",
     flexDirection: "column",
-    gap: "24px", // Aumentei levemente o espaço entre os blocos para acompanhar as letras maiores
+    gap: "24px", 
   },
   infoItem: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start", // Força o bloco a alinhar todo o conteúdo à esquerda
+    alignItems: "flex-start", 
     gap: "6px",
   },
   infoWithIcon: {
@@ -583,20 +583,20 @@ const s: Record<string, any> = {
     gap: "6px",
   },
   infoLabel: {
-    fontSize: "15px", // Aumentado (era 13px)
+    fontSize: "15px", 
     color: "#9CA3AF",
     fontWeight: 500,
     textAlign: "left",
   },
   infoValue: {
-    fontSize: "19px", // Aumentado (era 16px)
+    fontSize: "19px", 
     fontWeight: "600",
     color: "#1E293B",
-    textAlign: "left", // Garante que o texto não centralize
+    textAlign: "left", 
   },
   statusBadge: {
     display: "inline-block",
-    fontSize: "14px", // Aumentado (era 13px)
+    fontSize: "14px", 
     fontWeight: 600,
     padding: "6px 18px",
     borderRadius: "100px",
@@ -604,14 +604,14 @@ const s: Record<string, any> = {
   },
   sourceBadge: {
     display: "inline-block",
-    fontSize: "14px", // Aumentado (era 13px)
+    fontSize: "14px", 
     fontWeight: 600,
     padding: "6px 16px",
     borderRadius: "100px",
     alignSelf: "flex-start",
   },
 
-  // Modal
+  
   modalOverlay: {
     position: "fixed",
     inset: 0,
@@ -711,7 +711,7 @@ const s: Record<string, any> = {
     cursor: "pointer",
   },
 
-  // Loading
+  
   loadingWrap: {
     display: "flex",
     flexDirection: "column",

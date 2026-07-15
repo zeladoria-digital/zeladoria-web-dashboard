@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-// ── Icons ──────────────────────────────────────────────────────────────────────
+
 
 const ShieldIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
@@ -112,7 +112,7 @@ const ChevronDown = () => (
   </svg>
 );
 
-// Google Logo SVG
+
 const GoogleLogo = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -122,7 +122,7 @@ const GoogleLogo = () => (
   </svg>
 );
 
-// GOV.BR Logo simplified
+
 const GovBrLogo = () => (
   <svg width="48" height="18" viewBox="0 0 80 30" xmlns="http://www.w3.org/2000/svg">
     <rect width="80" height="30" rx="3" fill="#1351B4" />
@@ -131,7 +131,7 @@ const GovBrLogo = () => (
   </svg>
 );
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+
 
 interface FieldState {
   value: string;
@@ -142,7 +142,7 @@ interface FieldState {
 
 const makeField = (): FieldState => ({ value: "", error: false, errorMsg: "", focused: false });
 
-// ── Field Component ────────────────────────────────────────────────────────────
+
 
 interface FieldProps {
   id: string;
@@ -188,7 +188,7 @@ const Field = ({ id, label, placeholder, icon, state, onChange, onFocus, onBlur,
   </div>
 );
 
-// ── Main Component ─────────────────────────────────────────────────────────────
+
 
 export default function RegisterPage() {
   const [mounted, setMounted] = useState(false);
@@ -197,7 +197,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
-  // Fields
+  
   const [nome, setNome] = useState(makeField());
   const [email, setEmail] = useState(makeField());
   const [senha, setSenha] = useState(makeField());
@@ -211,7 +211,7 @@ export default function RegisterPage() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Masks
+  
   const maskCpf = (v: string) => v.replace(/\D/g, "").slice(0, 11).replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d)/, "$1.$2").replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   const maskPhone = (v: string) => {
     const d = v.replace(/\D/g, "").slice(0, 11);
@@ -230,7 +230,7 @@ export default function RegisterPage() {
   const setError = (setter: React.Dispatch<React.SetStateAction<FieldState>>, msg: string) =>
     setter(p => ({ ...p, error: true, errorMsg: msg }));
 
-  // ── Validators ────────────────────────────────────────────────────────────────
+  
   const VALID_EMAIL_DOMAINS = ["@gmail.com", "@outlook.com", "@yahoo.com", "@yahoo.com.br", "@icloud.com"];
 
   const validators: Record<string, (v: string) => string | null> = {
@@ -575,48 +575,48 @@ export default function RegisterPage() {
         </button>
 
         <div className="main-content">
-          {/* Brand */}
+          {}
           <div className="brand-section">
             <div className="logo-wrap"><ShieldIcon /></div>
             <h1 className="brand-title">ReportaAi</h1>
             <p className="brand-subtitle">Portal do Cidadão</p>
           </div>
 
-          {/* Card */}
+          {}
           <div className="card">
             <h2 className="card-title">Criar sua conta</h2>
             <p className="card-subtitle">Escolha como deseja se cadastrar</p>
 
-            {/* GOV.BR */}
+            {}
             <button className="social-btn social-btn-gov" onClick={() => {}}>
               <GovBrLogo />
               Continuar com o GOV.BR
             </button>
 
-            {/* Google */}
+            {}
             <button className="social-btn social-btn-google" onClick={() => {}}>
               <GoogleLogo />
               Continuar com o Google
             </button>
 
-            {/* Divider */}
+            {}
             <div className="divider-row">
               <div className="divider-line" />
               <span className="divider-text">ou cadastre-se com email</span>
               <div className="divider-line" />
             </div>
 
-            {/* Expand trigger */}
+            {}
             <button className="expand-btn" onClick={expanded ? undefined : handleExpand}>
               {expanded ? "Preencha os dados abaixo" : "Cadastrar"}
               <span className="chevron"><ChevronDown /></span>
             </button>
 
-            {/* Expandable form */}
+            {}
             <div className="form-expand" ref={formRef}>
               <div className="form-inner">
 
-                {/* Dados pessoais */}
+                {}
                 <div className="section-label">Dados Pessoais</div>
 
                 <Field
@@ -638,7 +638,7 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                {/* Acesso */}
+                {}
                 <div className="section-label">Dados de Acesso</div>
 
                 <Field
@@ -674,7 +674,7 @@ export default function RegisterPage() {
                   {senha.error && <div className="field-error"><ErrorIcon />{senha.errorMsg || "Preencha este campo"}</div>}
                 </div>
 
-                {/* Endereço */}
+                {}
                 <div className="section-label">Endereço</div>
 
                 <div className="field-row">
@@ -708,7 +708,7 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                {/* Submit */}
+                {}
                 <button className="submit-btn" onClick={handleSubmit} disabled={isLoading}>
                   {isLoading ? <><span className="spinner" />Cadastrando...</> : "Criar conta"}
                 </button>

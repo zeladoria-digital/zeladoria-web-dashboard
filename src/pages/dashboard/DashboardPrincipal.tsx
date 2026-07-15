@@ -4,8 +4,8 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// ─── Configuração de Ícones do Leaflet ───────────────────────────────────────
-// Corrige o problema clássico de caminhos de imagens quebrados após build do React
+
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Ícone customizado para a Posição Atual (Roxo e com efeito de pulso)
+
 const currentSpaceIcon = L.divIcon({
   className: "custom-current-marker",
   html: `
@@ -36,10 +36,10 @@ const currentSpaceIcon = L.divIcon({
     </div>
   `,
   iconSize: [20, 20],
-  iconAnchor: [10, 10], // Centraliza o ponto de ancoragem no meio do círculo
+  iconAnchor: [10, 10], 
 });
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface Complaint {
   id: string;
   status: string;
@@ -60,7 +60,7 @@ interface Stats {
   pending: number;
 }
 
-// ─── Helpers & Mappers ───────────────────────────────────────────────────────
+
 const categoryLabel: Record<string, string> = {
   buraco: "Buraco na via",
   fossa: "Fossa cheia",
@@ -80,7 +80,7 @@ const statusColor: Record<string, string> = {
   rejected: "#9CA3AF",
 };
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function DashboardPrincipal() {
   const [stats, setStats] = useState<Stats>({ total: 0, resolved: 0, inProgress: 0, pending: 0 });
   const [user, setUser] = useState<{ name: string } | null>(null);
@@ -98,7 +98,7 @@ export default function DashboardPrincipal() {
     getUserLocation();
   }, []);
 
-  // Captura a localização atual do profissional logado
+  
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -108,7 +108,7 @@ export default function DashboardPrincipal() {
         },
         (error) => {
           console.warn("Geolocalização recusada ou indisponível, usando coordenada padrão.", error);
-          // Coordenada padrão de Currais Novos / RN como fallback
+          
           setCurrentPosition([-6.2607, -36.5303]);
           setLoadingMap(false);
         }
@@ -156,7 +156,7 @@ export default function DashboardPrincipal() {
     <div style={s.root}>
       <main style={s.main}>
 
-        {/* ── Header ── */}
+        {}
         <header style={s.header}>
           <div style={s.headerLeft}>
             <h1 style={s.headerTitle}>Dashboard Principal</h1>
@@ -184,7 +184,7 @@ export default function DashboardPrincipal() {
                 </svg>
               </div>
 
-              {/* Dropdown */}
+              {}
               {showDropdown && (
                 <>
                   <div
@@ -223,7 +223,7 @@ export default function DashboardPrincipal() {
           </div>
         </header>
 
-        {/* ── Stat Cards ── */}
+        {}
         <div style={s.statsGrid}>
           {[
             {
@@ -264,10 +264,10 @@ export default function DashboardPrincipal() {
           ))}
         </div>
 
-        {/* ── Main Content Grid ── */}
+        {}
         <div style={s.mainGrid}>
 
-          {/* ── Left: Mapa Real Integrado ── */}
+          {}
           <section style={s.card}>
             <h2 style={s.cardTitle}>Mapa Interativo de Ocorrências</h2>
             <div style={s.mapWrap}>
@@ -282,7 +282,7 @@ export default function DashboardPrincipal() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
 
-                  {/* Marcador de referência da sua Posição Atual com ícone roxo customizado */}
+                  {}
                   <Marker position={currentPosition} icon={currentSpaceIcon}>
                     <Popup>
                       <strong>Minha Posição Atual</strong> <br /> 
@@ -290,7 +290,7 @@ export default function DashboardPrincipal() {
                     </Popup>
                   </Marker>
 
-                  {/* Renderização real das Ocorrências vindo do Firestore */}
+                  {}
                   {complaints
                     .filter((c) => c.location?.latitude && c.location?.longitude)
                     .map((c) => (
@@ -329,7 +329,7 @@ export default function DashboardPrincipal() {
             </div>
           </section>
 
-          {/* ── Right: Ocorrências Críticas ── */}
+          {}
           <section style={s.card}>
             <h2 style={s.cardTitle}>Ocorrências Críticas</h2>
 
@@ -398,7 +398,7 @@ export default function DashboardPrincipal() {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+
 const s: Record<string, any> = {
   root: {
     width: "100%",

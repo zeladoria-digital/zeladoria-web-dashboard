@@ -1,4 +1,4 @@
-/* FORÇA O FUNDO GLOBAL PARA O SEU LAYOUT E REMOVE ROLAGEM EXTRA */
+
 body {
   margin: 0;
   padding: 0;
@@ -6,7 +6,7 @@ body {
   overflow-x: hidden;
 }
 
-/* RESET E CORES BÁSICAS */
+
 .container-principal {
   background-color: #f9fafb;
   min-height: 100vh;
@@ -17,7 +17,7 @@ body {
   color: #1f2937;
 }
 
-/* REMOVE O FUNDO BRANCO GERAL PARA DEIXAR O CINZA APARECER */
+
 .conteudo-central {
   max-width: 1200px;
   margin: 0 auto;
@@ -27,7 +27,7 @@ body {
   background-color: transparent; 
 }
 
-/* 1. CABEÇALHO */
+
 .cabecalho {
   display: flex;
   justify-content: space-between;
@@ -68,7 +68,7 @@ body {
   background-color: #7e22ce;
 }
 
-/* 2. CARDS DE RESUMO */
+
 .grid-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -97,7 +97,7 @@ body {
   font-weight: 500;
 }
 
-/* 3. TABELA */
+
 .container-tabela {
   background-color: white;
   border-radius: 0.75rem;
@@ -156,13 +156,13 @@ body {
   align-items: center;
   z-index: 1000;
 }
-/* Container do Modal */
+
 .modal-content {
-  background: #ffffff !important; /* Força fundo branco */
+  background: #ffffff !important; 
   padding: 2rem;
   border-radius: 12px;
   width: 400px;
-  color: #333333 !important; /* Força texto escuro */
+  color: #333333 !important; 
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
@@ -170,11 +170,11 @@ body {
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
-  color: #1f2937 !important; /* Força o título a ser cinza bem escuro quase preto */
-  font-weight: 600;         /* Dá um pouco mais de destaque */
+  color: #1f2937 !important; 
+  font-weight: 600;         
 }
 
-/* Labels e Inputs */
+
 .form-group {
   margin-bottom: 1rem;
   text-align: left;
@@ -191,16 +191,16 @@ body {
 .modal-content input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #d1d5db !important; /* Borda clara */
-  background-color: #ffffff !important; /* Fundo branco */
-  color: #1f2937 !important; /* Texto escuro */
+  border: 1px solid #d1d5db !important; 
+  background-color: #ffffff !important; 
+  color: #1f2937 !important; 
   border-radius: 6px;
   box-sizing: border-box;
 }
 
-/* Botões */
+
 .btn-save {
-  background-color: #7c3aed !important; /* Cor do seu tema */
+  background-color: #7c3aed !important; 
   color: white !important;
   border: none;
   padding: 0.75rem 1.5rem;

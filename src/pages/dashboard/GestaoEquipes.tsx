@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+
 interface FieldTeam {
   id: string;
   name: string;
-  members?: any[]; // O back-end envia como 'members' contendo os objetos dos usuários
+  members?: any[]; 
   zone?: string;
   status: "active" | "inactive" | string;
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+
 export default function GestaoEquipes() {
   const navigate = useNavigate();
   const [teams, setTeams] = useState<FieldTeam[]>([]);
@@ -135,13 +135,13 @@ export default function GestaoEquipes() {
     const token = localStorage.getItem("token");
 
     try {
-      // Busca todos os usuários com papel de field-agent
+      
       const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const users = await res.json();
 
-      // Filtra apenas field-agents que não são membros da equipe
+      
       const agents = users.filter((u: any) =>
         u.roles?.some((r: any) => r.slug === "field-agent") &&
         !team.memberIds?.includes(u.id)
@@ -190,7 +190,7 @@ export default function GestaoEquipes() {
     <div style={s.root}>
       <main style={s.main}>
 
-        {/* ── Header ── */}
+        {}
         <header style={s.header}>
           <a href="/dashboard" style={s.backLink}>← Dashboard</a>
           <div style={s.headerRow}>
@@ -206,7 +206,7 @@ export default function GestaoEquipes() {
 
         <div style={s.divider} />
 
-        {/* ── Tabela ── */}
+        {}
         {loading ? (
           <div style={s.loadingWrap}>
             <div style={s.spinner} />
@@ -255,7 +255,7 @@ export default function GestaoEquipes() {
                       </td>
                       <td style={s.td}>
                         <div style={s.actionsWrap}>
-                          {/* Editar */}
+                          {}
                           <button
                             style={s.actionBtnEdit}
                             onClick={() => openEditModal(team)}
@@ -282,7 +282,7 @@ export default function GestaoEquipes() {
                             Membros
                           </button>
 
-                          {/* Inativar */}
+                          {}
                           {team.status === "active" && (
                             <button
                               style={s.actionBtnInactivate}
@@ -315,7 +315,7 @@ export default function GestaoEquipes() {
         )}
       </main>
 
-      {/* ── Modal Criar/Editar ── */}
+      {}
       {showModal && (
         <div style={s.modalOverlay}>
           <div style={s.modal}>
@@ -356,7 +356,7 @@ export default function GestaoEquipes() {
         </div>
       )}
 
-      {/* ── Modal Confirmar Inativação ── */}
+      {}
       {showConfirmModal && selectedTeam && (
         <div style={s.modalOverlay}>
           <div style={s.modal}>
@@ -425,7 +425,7 @@ export default function GestaoEquipes() {
               </div>
             ) : (
               <>
-                {/* Membros atuais */}
+                {}
                 {members.length > 0 && (
                   <div style={s.modalField}>
                     <label style={s.modalLabel}>Membros atuais ({members.length})</label>
@@ -442,7 +442,7 @@ export default function GestaoEquipes() {
                   </div>
                 )}
 
-                {/* Adicionar novos membros */}
+                {}
                 <div style={s.modalField}>
                   <label style={s.modalLabel}>
                     Adicionar agentes de campo
@@ -509,7 +509,7 @@ export default function GestaoEquipes() {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+
 const s: Record<string, React.CSSProperties | any> = {
   root: {
     width: "100%",
@@ -524,7 +524,7 @@ const s: Record<string, React.CSSProperties | any> = {
     gap: "28px",
   },
 
-  // Header
+  
   header: {
     display: "flex",
     flexDirection: "column",
@@ -568,7 +568,7 @@ const s: Record<string, React.CSSProperties | any> = {
     width: "100%",
   },
 
-  // Table
+  
   tableCard: {
     background: "white",
     border: "1px solid #E2E8F0",
@@ -673,7 +673,7 @@ const s: Record<string, React.CSSProperties | any> = {
     fontSize: "15px",
   },
 
-  // Loading
+  
   loadingWrap: {
     display: "flex",
     flexDirection: "column",
@@ -690,7 +690,7 @@ const s: Record<string, React.CSSProperties | any> = {
     animation: "spin 0.8s linear infinite",
   },
 
-  // Modal
+  
   modalOverlay: {
     position: "fixed",
     inset: 0,
@@ -794,7 +794,7 @@ const s: Record<string, React.CSSProperties | any> = {
     cursor: "pointer",
   },
 
-  // Confirm Modal
+  
   confirmWrap: {
     display: "flex",
     flexDirection: "column",

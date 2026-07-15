@@ -16,10 +16,10 @@ const mockDevices: Device[] = [
 ];
 
 export default function DeviceManagement() {
-// Adicione o setDevices aqui no seu estado:
+
   const [devices, setDevices] = useState<Device[]>(mockDevices);
 
-// Função para buscar a lista real no banco de dados
+
   const buscarDispositivos = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -31,15 +31,15 @@ export default function DeviceManagement() {
         const dadosDoBanco = await response.json();
         
         const dispositivosFormatados = dadosDoBanco.map((item: any) => {
-// Dentro do mapeamento da buscarDispositivos:
+
 let statusVisual = 'Offline';
-// Agora ele acende a luz verde se vier 'active' do banco OU se vier 'Online' direto do seu form
+
 if (item.status === 'active' || item.status === 'Online') { 
   statusVisual = 'Online';
 }
 
           return {
-            // Tentamos pegar o seu ID, mas se o banco não mandou, exibimos o ID do Firebase resumido
+            
             id: item.deviceId || (item.id ? item.id.substring(0, 8) + '...' : 'N/A'),
             veiculo: item.vehiclePlate || 'N/A',
             status: statusVisual as 'Online' | 'Offline',
@@ -54,36 +54,36 @@ if (item.status === 'active' || item.status === 'Online') {
       console.error("Erro ao buscar a lista real:", error);
     }
   };
-  // Faz a busca automática assim que a tela abre
+  
   useEffect(() => {
     buscarDispositivos();
   }, []);
-  // Inspetor separando os online e contando
+  
   const quantidadeOnline = devices.filter(device => device.status === 'Online').length;
   
-  // Inspetor separando os offline e contando
+  
   const quantidadeOffline = devices.filter(device => device.status === 'Offline').length;
 
-  // Soma de todas as detecções usando reduce
+  
   const totalDeteccoes = devices.reduce((acc, device) => acc + device.deteccoes, 0);
 
-  // Controle do Modal
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Estado do formulário (para capturar os inputs)
+  
   const [formData, setFormData] = useState({
     id: '',
     veiculo: '',
-    status: 'Online', // Valor padrão
+    status: 'Online', 
     bateria: '100%',
     deteccoes: 0
   });
 
-  // Função disparada ao clicar em Salvar (agora com a tipagem do TypeScript React.FormEvent)
+  
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Evita que a página recarregue ao enviar o formulário
+    e.preventDefault(); 
 
-    // Pegar o token (O "Crachá" de Autorização)
+    
     const token = localStorage.getItem('token'); 
 
     if (!token) {
@@ -92,20 +92,20 @@ if (item.status === 'active' || item.status === 'Online') {
     }
 
     try {
-      // Disparar a requisição POST para o Back-end
+      
       const response = await fetch('http://localhost:3000/devices', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` 
         },
-        // Enviando os dados do estado 
+        
         body: JSON.stringify({
-          // O validador do Kauê exige esse campo. 
-          // Estamos mandando um valor fixo (mock) só para passar no teste dele.
+          
+          
           aiModelVersion: "YOLOv8-IoT", 
           
-          // E podemos mandar os nossos dados também (se o Model dele salvar)
+          
           deviceId: formData.id, 
           vehiclePlate: formData.veiculo,
           status: formData.status,
@@ -117,8 +117,8 @@ if (response.ok) {
         setIsModalOpen(false);
         setFormData({ id: '', veiculo: '', status: 'Online', bateria: '100%', deteccoes: 0 });
         
-        // A MÁGICA ACONTECE AQUI: 
-        // Chama a função para buscar a lista atualizada do banco!
+        
+        
         buscarDispositivos(); 
       } else {
         const errorData = await response.json();
@@ -135,7 +135,7 @@ if (response.ok) {
     <div className="container-principal">
       <div className="conteudo-central">
         
-        {/* CABEÇALHO */}
+        {}
         <header className="cabecalho">
           <div className="titulos">
             <button className="botao-voltar">← Dashboard</button>
@@ -146,7 +146,7 @@ if (response.ok) {
             </button>
         </header>
 
-        {/* CARDS DE RESUMO */}
+        {}
         <div className="grid-cards">
           <div className="card">
             <span className="numero-destaque online">{quantidadeOnline}</span>
@@ -162,7 +162,7 @@ if (response.ok) {
           </div>
         </div>
 
-        {/* TABELA DE DADOS */}
+        {}
         <div className="container-tabela">
           <table className="tabela-dispositivos">
             <thead>
@@ -197,7 +197,7 @@ if (response.ok) {
           </table>
         </div>
 
-        {/* MODAL DE CADASTRO (Posicionado no final do componente pai para evitar bugs de CSS) */}
+        {}
         {isModalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
